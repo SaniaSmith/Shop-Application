@@ -1,10 +1,13 @@
 package com.example.shopapp
 
+import android.animation.LayoutTransition
 import android.app.Activity
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +27,6 @@ class productAdapter(val context: Activity, val dataProductList : List<productDa
     override fun onBindViewHolder(holder: myViewHolder, position: Int) {
         val currentProductData =dataProductList[position]
         val maxLength = 20
-        val maxLengthDesc = 300
 
         Picasso.get().load(currentProductData.image).into(holder.productImage)
 
@@ -40,24 +42,16 @@ class productAdapter(val context: Activity, val dataProductList : List<productDa
         val stringPrice = currentProductData.price.toString()
         holder.productPrice.text = stringPrice
 
-        val shortDescString = if (currentProductData.description.length > maxLengthDesc) {
-            currentProductData.description.substring(0, maxLength) + "..."
-        } else {
-            currentProductData.description
-        }
-
         holder.expandCard.setOnClickListener {
             if (holder.productDesc.visibility == View.GONE) {
                 holder.productDesc.visibility = View.VISIBLE
-                holder.productDesc.text = shortDescString
+                holder.productDesc.text = currentProductData.description
                 holder.expandCard.text = "Show Less"
-                holder.cardHolder.layoutParams.height = 550
-                holder.productDesc.layoutParams.height = 208
+                holder.layoutHolder.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
             } else if (holder.productDesc.visibility == View.VISIBLE) {
                 holder.productDesc.visibility = View.GONE
-                holder.expandCard.text = "View More"
-                holder.productDesc.layoutParams.height = 104
-                holder.cardHolder.layoutParams.height = 250
+                holder.expandCard.text = "Show Desc"
+                holder.layoutHolder.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
             }
         }
 
@@ -70,7 +64,7 @@ class productAdapter(val context: Activity, val dataProductList : List<productDa
         val productPrice : TextView
         val expandCard : TextView
         val productDesc : TextView
-        val cardHolder : CardView
+        val layoutHolder : LinearLayout
 
         init {
             productImage = itemView.findViewById(R.id.iv_productImage)
@@ -79,8 +73,7 @@ class productAdapter(val context: Activity, val dataProductList : List<productDa
             productPrice = itemView.findViewById(R.id.tv_productPrice)
             expandCard = itemView.findViewById(R.id.tv_viewMore)
             productDesc = itemView.findViewById(R.id.tv_descProduct)
-            cardHolder = itemView.findViewById(R.id.cv_product)
+            layoutHolder = itemView.findViewById(R.id.ll_change)
         }
-
     }
 }

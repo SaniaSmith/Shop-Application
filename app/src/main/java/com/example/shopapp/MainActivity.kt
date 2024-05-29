@@ -1,9 +1,10 @@
 package com.example.shopapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
+import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
@@ -16,21 +17,22 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var myProductRecyclerView: RecyclerView
     lateinit var myProductAdapter: productAdapter
+    lateinit var cartButton: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        cartButton = findViewById(R.id.iv_cart)
         myProductRecyclerView = findViewById(R.id.rv_products)
 
         var retrofitBuilder = Retrofit.Builder()
             .baseUrl("https://fakestoreapi.com")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiInterface::class.java)
+            .create(ProductApiInterface::class.java)
 
         var retrofitProductData = retrofitBuilder.getProductData()
-//        var retrofitCartData = retrofitBuilder.getCartsData()
 
         retrofitProductData.enqueue(object : Callback<productData?> {
             override fun onResponse(call: Call<productData?>, response: Response<productData?>) {
@@ -48,18 +50,9 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-//        retrofitCartData.enqueue(object : Callback<cartData?> {
-//            override fun onResponse(call: Call<cartData?>, response: Response<cartData?>) {
-//                var dataCartList = response.body()
-//                var textView = findViewById<TextView>(R.id.tv2)
-//                textView.text = dataCartList.toString()
-//
-//                Log.d("TAG : onResponse", "onResponse : " + response.body())
-//            }
-//
-//            override fun onFailure(call: Call<cartData?>, t: Throwable) {
-//                Log.d("TAG: onFailure", "onResponse : " + t.message)
-//            }
-//        })
+        cartButton.setOnClickListener {
+            val intent = Intent(this, CartActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

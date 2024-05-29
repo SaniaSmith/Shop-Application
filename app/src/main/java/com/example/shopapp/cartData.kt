@@ -1,3 +1,8 @@
 package com.example.shopapp
 
-class cartData : ArrayList<cartDataItem>()
+data class cartData(
+    val carts: List<cart>,
+    val limit: Int,
+    val skip: Int,
+    val total: Int
+)
